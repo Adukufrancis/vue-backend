@@ -121,6 +121,93 @@ function getStatusMessage(statusCode) {
 // Apply logger middleware to all routes
 app.use(logger);
 
+// Static File Middleware for Lesson Images (4% Backend Requirement)
+const path = require('path');
+const fs = require('fs').promises;
+
+// Create images directory if it doesn't exist
+const ensureImagesDirectory = async () => {
+    const imagesDir = path.join(__dirname, 'public', 'images', 'lessons');
+    try {
+        await fs.mkdir(imagesDir, { recursive: true });
+        console.log('📁 Images directory ensured:', imagesDir);
+    } catch (error) {
+        console.error('❌ Error creating images directory:', error);
+    }
+};
+
+// Custom static file middleware for lesson images
+const lessonImageMiddleware = async (req, res, next) => {
+    // Check if the request is for a lesson image
+    if (req.path.startsWith('/images/lessons/')) {
+        const imagePath = path.join(__dirname, 'public', req.path);
+        const fileName = path.basename(req.path);
+        
+        try {
+            // Check if file exists
+            await fs.access(imagePath);
+            
+            // Get file stats
+            const stats = await fs.stat(imagePath);
+            
+            // Determine content type based on file extension
+            const ext = path.extname(fileName).toLowerCase();
+            const contentTypes = {
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg',
+                '.png': 'image/png',
+                '.gif': 'image/gif',
+                '.webp': 'image/webp',
+                '.svg': 'image/svg+xml'
+            };
+            
+            const contentType = contentTypes[ext] || 'application/octet-stream';
+            
+            // Set appropriate headers
+            res.setHeader('Content-Type', contentType);
+            res.setHeader('Content-Length', stats.size);
+            res.setHeader('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
+            res.setHeader('Last-Modified', stats.mtime.toUTCString());
+            
+            // Log successful image serve
+            console.log(`🖼️  Serving image: ${fileName} (${stats.size} bytes, ${contentType})`);
+            
+            // Read and send the file
+            const fileBuffer = await fs.readFile(imagePath);
+            res.send(fileBuffer);
+            
+        } catch (error) {
+            // File doesn't exist or other error
+            console.log(`❌ Image not found: ${fileName}`);
+            
+            // Return structured error response
+            res.status(404).json({
+                error: 'Image not found',
+                message: `The lesson image '${fileName}' could not be found on the server.`,
+                requestedPath: req.path,
+                suggestions: [
+                    'Check if the image filename is correct',
+                    'Ensure the image has been uploaded to the server',
+                    'Verify the image format is supported (jpg, png, gif, webp, svg)'
+                ],
+                supportedFormats: ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'],
+                timestamp: new Date().toISOString(),
+                availableEndpoints: {
+                    lessons: '/api/lessons',
+                    orders: '/api/orders',
+                    imageUpload: 'POST /api/images/upload (if implemented)'
+                }
+            });
+        }
+    } else {
+        // Not a lesson image request, continue to next middleware
+        next();
+    }
+};
+
+// Apply the custom image middleware
+app.use(lessonImageMiddleware);
+
 // MongoDB connection
 let db;
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -355,10 +442,16 @@ app.use((req, res) => {
 });
 
 // Start server
-connectToDatabase().then(() => {
+connectToDatabase().then(async () => {
+    // Ensure images directory exists
+    await ensureImagesDirectory();
+    
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
         console.log(`📋 Logger middleware active - all requests will be logged`);
         console.log(`🔍 Check console for detailed request/response logs`);
+        console.log(`🖼️  Static images served from: /images/lessons/`);
+        console.log(`📁 Example: http://localhost:${PORT}/images/lessons/mathematics.jpg`);
+        console.log(`❌ Test error: http://localhost:${PORT}/images/lessons/nonexistent.jpg`);
     });
 });

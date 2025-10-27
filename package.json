@@ -8,7 +8,8 @@
     "dev": "nodemon server.js",
     "insert-lessons": "node insertLessons.js",
     "setup-orders": "node setupOrdersCollection.js",
-    "setup-db": "node insertLessons.js && node setupOrdersCollection.js"
+    "setup-db": "node insertLessons.js && node setupOrdersCollection.js",
+    "create-images": "node createSampleImages.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

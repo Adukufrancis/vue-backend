@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="gradscience" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#34a853;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#34a85388;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow">
+            <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+        </filter>
+    </defs>
+    
+    <!-- Background -->
+    <rect width="400" height="300" fill="url(#gradscience)" rx="15"/>
+    
+    <!-- Main Icon -->
+    <text x="200" y="120" font-family="Arial, sans-serif" font-size="60" 
+          text-anchor="middle" fill="white" opacity="0.9" filter="url(#shadow)">⚗️</text>
+    
+    <!-- Subject Name -->
+    <text x="200" y="180" font-family="Arial, sans-serif" font-size="32" 
+          text-anchor="middle" fill="white" font-weight="bold" filter="url(#shadow)">
+          SCIENCE
+    </text>
+    
+    <!-- Symbol/Formula -->
+    <text x="200" y="210" font-family="Arial, sans-serif" font-size="18" 
+          text-anchor="middle" fill="white" opacity="0.8">
+          H₂O + NaCl
+    </text>
+    
+    <!-- Lesson Label -->
+    <text x="200" y="250" font-family="Arial, sans-serif" font-size="16" 
+          text-anchor="middle" fill="white" opacity="0.7">
+          LESSON IMAGE
+    </text>
+    
+    <!-- Border -->
+    <rect width="396" height="296" x="2" y="2" fill="none" 
+          stroke="white" stroke-width="3" rx="15" opacity="0.4"/>
+          
+    <!-- Corner decoration -->
+    <circle cx="50" cy="50" r="20" fill="white" opacity="0.2"/>
+    <circle cx="350" cy="250" r="15" fill="white" opacity="0.2"/>
+</svg>
