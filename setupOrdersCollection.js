@@ -3,7 +3,7 @@ require('dotenv').config();
 
 // MongoDB connection configuration
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017';
-const DATABASE_NAME = process.env.DATABASE_NAME || 'lessonMarketplace';
+const DATABASE_NAME = process.env.DATABASE_NAME || 'lessonHub';
 const ORDERS_COLLECTION = 'orders';
 
 async function setupOrdersCollection() {
