@@ -162,16 +162,7 @@ async function startServer() {
                 res.status(500).json({ message: 'Internal Server Error', error: error.message });
             }
         });
-
-        app.get('/test-image/:imageName', (req,res) => {
-            res.redirect(`/images/${req.params.imageName}`);
-        });
-
-        app.use((err, req, res, next) => {
-            console.error(err.stack);
-            res.status(500).json({ message: 'Something went wrong!' });
-        });
-
+               
         process.on('SIGINT', async () => {
             try {
                 await client.close();
